@@ -18,6 +18,7 @@ test:
 deps:
 	${GODEPS} github.com/andygrunwald/go-jira
 	${GODEPS} github.com/jung-kurt/gofpdf
+	${GODEPS} golang.org/x/text/encoding/charmap
 
 stop:
 	pkill -f ${EXECUTABLE}

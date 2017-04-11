@@ -1,6 +1,78 @@
 # Jira to PDF
 
 This is a small tool to export Jira issues to PDF. 
+
+# How to use
+
+```
+jira-to-pdf -i [your-jira-instance-url] -u [your-jira-username] -p [your-jira-password] -q [any-jql-query] -t [document-title] -o [output-filename]
+```
+
+# Options
+
+```
+-i  = Your JIRA instance URL, ex: https://your-instance.atlassian.net  
+-u  = Your JIRA instance username
+-p  = Your JIRA instance password
+-q  = Your JQL query to list the issues on JIRA
+-t  = PDF document title [optional, default: JIRA Issues]
+-o  = Output filename [optional, default: jira-issues.pdf]
+-it = Issue template (support for basic html) [optional, default: "<b>Issue:</b> [issue.key]<br /><b>Summary:</b> [issue.fields.summary]<br /><b>Assignee:</b> [issue.fields.assignee.name]<br /><b>Status:</b> [issue.fields.status.name]<br /><b>Created:</b> [issue.fields.created]"] 
+```
+
+# Template fields that can be replaced
+
+```
+[issue.key]
+[issue.id]
+
+[issue.fields.created]
+[issue.fields.description]
+[issue.fields.duedate]
+[issue.fields.expand]
+[issue.fields.resolutiondate]
+[issue.fields.summary]
+[issue.fields.timeestimate]
+[issue.fields.timeoriginalestimate]
+[issue.fields.timespent]
+
+[issue.fields.priority.id]
+[issue.fields.priority.name]
+
+[issue.fields.aggregateprogress.progress]
+[issue.fields.aggregateprogress.total]
+
+[issue.fields.progress.progress]
+[issue.fields.progress.total]
+[issue.fields.assignee.name]
+
+[issue.fields.assignee.emailaddrress]
+[issue.fields.assignee.displayname]
+[issue.fields.assignee.key]
+
+[issue.fields.creator.name]
+[issue.fields.creator.emailaddrress]
+[issue.fields.creator.displayname]
+[issue.fields.creator.key]
+
+[issue.fields.reporter.name]
+[issue.fields.reporter.emailaddrress]
+[issue.fields.reporter.displayname]
+[issue.fields.reporter.key]
+
+[issue.fields.project.name]
+[issue.fields.project.description]
+[issue.fields.project.id]
+[issue.fields.project.key]
+
+[issue.fields.status.name]
+[issue.fields.status.description]
+[issue.fields.status.id]
+
+[issue.fields.type.name]
+[issue.fields.type.description]
+[issue.fields.type.id]
+```
   
 # Installing from source
 
@@ -13,11 +85,6 @@ This is a small tool to export Jira issues to PDF.
 
 You can get prebuilt executables on directory "build".
 
-# How to use
-
-```
-jira-to-pdf -i [your-jira-instance-url] -u [your-jira-username] -p [your-jira-password] -q [any-jql-query] -t [document-title] -o [output-filename]
-```
 
 # Support with donation
 [![Support with donation](http://donation.pcoutinho.com/images/donate-button.png)](http://donation.pcoutinho.com/)
