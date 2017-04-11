@@ -31,9 +31,9 @@ var (
 
 func main() {
 	// parse params
-	flag.StringVar(&paramInstance, "i", "", "URL of your Jira instance, like: https://your.jira-instance.com")
-	flag.StringVar(&paramUsername, "u", "", "Username of your Jira instance account")
-	flag.StringVar(&paramPassword, "p", "", "Password of your Jira instance account")
+	flag.StringVar(&paramInstance, "i", "", "URL of your JIRA instance, like: https://your.jira-instance.com")
+	flag.StringVar(&paramUsername, "u", "", "Username of your JIRA instance account")
+	flag.StringVar(&paramPassword, "p", "", "Password of your JIRA instance account")
 	flag.StringVar(&paramQuery, "q", "", "JQL query for issues search")
 	flag.StringVar(&paramOutputFilename, "o", "", "Output filename")
 	flag.StringVar(&paramDocumentTitle, "t", "", "Document title")
@@ -43,19 +43,19 @@ func main() {
 	flag.Parse()
 
 	if len(paramInstance) == 0 {
-		log.Fatal("Jira instance is not defined")
+		log.Fatal("JIRA instance is not defined")
 	}
 
 	if len(paramUsername) == 0 {
-		log.Fatal("Jira instance username is not defined")
+		log.Fatal("JIRA instance username is not defined")
 	}
 
 	if len(paramPassword) == 0 {
-		log.Fatal("Jira instance password is not defined")
+		log.Fatal("JIRA instance password is not defined")
 	}
 
 	if len(paramQuery) == 0 {
-		log.Fatal("Jira issue query (JQL) is not defined")
+		log.Fatal("JIRA issue query (JQL) is not defined")
 	}
 
 	if len(paramOutputFilename) == 0 {

@@ -1,6 +1,6 @@
-# Jira to PDF
+# JIRA to PDF
 
-This is a small tool to export Jira issues to PDF. 
+This is a small tool to export JIRA issues to PDF. 
 
 # How to use
 
