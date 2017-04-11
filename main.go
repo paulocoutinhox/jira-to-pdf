@@ -11,6 +11,7 @@ import (
 	"strings"
 	"strconv"
 	"golang.org/x/text/encoding/charmap"
+	"time"
 )
 
 var (
@@ -22,8 +23,10 @@ var (
 	paramOutputFilename string
 	paramDocumentTitle string
 	paramIssueTemplate string
+	paramDateTimeFormat string
 	pdfGenerator *gofpdf.Fpdf
 	pdfTR func(string) string
+	apiDateTimeFormat string
 )
 
 func main() {
@@ -35,6 +38,7 @@ func main() {
 	flag.StringVar(&paramOutputFilename, "o", "", "Output filename")
 	flag.StringVar(&paramDocumentTitle, "t", "", "Document title")
 	flag.StringVar(&paramIssueTemplate, "it", "", "Issue template")
+	flag.StringVar(&paramDateTimeFormat, "dft", "", "DateTime format")
 	flag.BoolVar(&paramVerbose, "v", false, "Verbose mode")
 	flag.Parse()
 
@@ -63,8 +67,14 @@ func main() {
 	}
 
 	if len(paramIssueTemplate) == 0 {
-		paramIssueTemplate = `<b>Issue:</b> [issue.key]<br /><b>Summary:</b> [issue.fields.summary]<br /><b>Assignee:</b> [issue.fields.assignee.name]<br /><b>Status:</b> [issue.fields.status.name]<br /><b>Created:</b> [issue.fields.created]`
+		paramIssueTemplate = "<b>Issue:</b> [issue.key]<br /><b>Summary:</b> [issue.fields.summary]<br /><b>Assignee:</b> [issue.fields.assignee.name]<br /><b>Status:</b> [issue.fields.status.name]<br /><b>Created:</b> [issue.fields.created]"
 	}
+
+	if len(paramDateTimeFormat) == 0 {
+		paramDateTimeFormat = "2006-01-02 15:04:05"
+	}
+
+	apiDateTimeFormat = "2006-01-02T15:04:05.999999999-0700";
 
 	// authenticate
 	jiraClient, err := jira.NewClient(nil, paramInstance)
@@ -125,6 +135,7 @@ func main() {
 		html.Write(lineHt, issueText)
 
 		// draw issue separator
+		pdfGenerator.SetDrawColor(195, 195, 195)
 		pdfGenerator.Ln(lineHt)
 		pdfGenerator.Ln(2)
 
@@ -149,7 +160,6 @@ func parseIssueTemplate(index int, issue jira.Issue) string {
 
 	issueText = strings.Replace(issueText, "[issue.key]", issue.Key, -1)
 	issueText = strings.Replace(issueText, "[issue.id]", issue.ID, -1)
-	issueText = strings.Replace(issueText, "[issue.fields.created]", issue.Fields.Created, -1)
 	issueText = strings.Replace(issueText, "[issue.fields.description]", issue.Fields.Description, -1)
 	issueText = strings.Replace(issueText, "[issue.fields.duedate]", issue.Fields.Duedate, -1)
 	issueText = strings.Replace(issueText, "[issue.fields.expand]", issue.Fields.Expand, -1)
@@ -236,6 +246,20 @@ func parseIssueTemplate(index int, issue jira.Issue) string {
 		issueText = strings.Replace(issueText, "[issue.fields.status.name]", "", -1)
 		issueText = strings.Replace(issueText, "[issue.fields.status.description]", "", -1)
 		issueText = strings.Replace(issueText, "[issue.fields.status.id]", "", -1)
+	}
+
+	if len(issue.Fields.Created) > 0 {
+		dateTime, err := time.Parse(apiDateTimeFormat, issue.Fields.Created)
+
+		if err == nil {
+			issueText = strings.Replace(issueText, "[issue.fields.created]", dateTime.Format(paramDateTimeFormat), -1)
+		} else {
+			if paramVerbose {
+				log.Printf("Error on parse field \"created\"! %v\n", err)
+			}
+
+			issueText = strings.Replace(issueText, "[issue.fields.created]", "", -1)
+		}
 	}
 
 	return issueText;

@@ -18,6 +18,7 @@ jira-to-pdf -i [your-jira-instance-url] -u [your-jira-username] -p [your-jira-pa
 -t  = PDF document title [optional, default: JIRA Issues]
 -o  = Output filename [optional, default: jira-issues.pdf]
 -it = Issue template (support for basic html) [optional, default: "<b>Issue:</b> [issue.key]<br /><b>Summary:</b> [issue.fields.summary]<br /><b>Assignee:</b> [issue.fields.assignee.name]<br /><b>Status:</b> [issue.fields.status.name]<br /><b>Created:</b> [issue.fields.created]"] 
+-dtf = DateTime format [optional] (default: "2006-01-02 15:04:05", check golang format options: https://golang.org/pkg/time/#pkg-examples) 
 ```
 
 # Template fields that can be replaced
