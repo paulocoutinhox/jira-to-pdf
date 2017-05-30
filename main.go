@@ -4,29 +4,30 @@ import (
 	"flag"
 	"fmt"
 
-	jira "github.com/andygrunwald/go-jira"
-	"log"
 	"io/ioutil"
-	"github.com/jung-kurt/gofpdf"
-	"strings"
+	"log"
 	"strconv"
-	"golang.org/x/text/encoding/charmap"
+	"strings"
 	"time"
+
+	jira "github.com/andygrunwald/go-jira"
+	"github.com/jung-kurt/gofpdf"
+	"golang.org/x/text/encoding/charmap"
 )
 
 var (
-	paramInstance string
-	paramUsername string
-	paramPassword string
-	paramQuery string
-	paramVerbose bool
+	paramInstance       string
+	paramUsername       string
+	paramPassword       string
+	paramQuery          string
+	paramVerbose        bool
 	paramOutputFilename string
-	paramDocumentTitle string
-	paramIssueTemplate string
+	paramDocumentTitle  string
+	paramIssueTemplate  string
 	paramDateTimeFormat string
-	pdfGenerator *gofpdf.Fpdf
-	pdfTR func(string) string
-	apiDateTimeFormat string
+	pdfGenerator        *gofpdf.Fpdf
+	pdfTR               func(string) string
+	apiDateTimeFormat   string
 )
 
 func main() {
@@ -74,7 +75,7 @@ func main() {
 		paramDateTimeFormat = "2006-01-02 15:04:05"
 	}
 
-	apiDateTimeFormat = "2006-01-02T15:04:05.999999999-0700";
+	apiDateTimeFormat = "2006-01-02T15:04:05.999999999-0700"
 
 	// authenticate
 	jiraClient, err := jira.NewClient(nil, paramInstance)
@@ -104,21 +105,29 @@ func main() {
 
 	if paramVerbose {
 		log.Printf("Total of issues: %v\n", len(issues))
-		fmt.Printf("Issues: %s\n", issues)
+		fmt.Printf("Issues: %v\n", issues)
 	}
 
 	// generate PDF
 	pdfGenerator = gofpdf.New("P", "mm", "A4", "")
 	pdfTR = pdfGenerator.UnicodeTranslatorFromDescriptor("")
 
-	// document title
 	pdfGenerator.AddPage()
+
+	// document title
 	pdfGenerator.SetFont("Arial", "B", 16)
 	pdfGenerator.SetFillColor(222, 222, 222)
 	pdfGenerator.SetTextColor(0, 0, 0)
 	pdfGenerator.MultiCell(0, 16, pdfTR(paramDocumentTitle), "1", "C", true)
 
-	pdfGenerator.Ln(8)
+	// document subtitle
+	currentPosY := pdfGenerator.GetY()
+	pdfGenerator.SetFont("Arial", "", 9)
+	pdfGenerator.SetTextColor(0, 0, 0)
+	pdfGenerator.MultiCell(0, 9, fmt.Sprintf("Total of issues: %v", len(issues)), "1", "L", false)
+	pdfGenerator.SetY(currentPosY)
+	pdfGenerator.MultiCell(0, 9, fmt.Sprintf("Created at: %v", time.Now().Format(paramDateTimeFormat)), "1", "R", false)
+	pdfGenerator.Ln(4)
 
 	// issues
 	for index, issue := range issues {
@@ -142,7 +151,7 @@ func main() {
 		pageWidth, _ := pdfGenerator.GetPageSize()
 		x, y := pdfGenerator.GetXY()
 		marginL, marginR, _, _ := pdfGenerator.GetMargins()
-		pdfGenerator.Line(x, y, x + pageWidth - marginR - marginL, y)
+		pdfGenerator.Line(x, y, x+pageWidth-marginR-marginL, y)
 
 		pdfGenerator.Ln(2)
 	}
@@ -262,5 +271,5 @@ func parseIssueTemplate(index int, issue jira.Issue) string {
 		}
 	}
 
-	return issueText;
+	return issueText
 }
