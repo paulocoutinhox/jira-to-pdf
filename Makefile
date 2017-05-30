@@ -45,7 +45,7 @@ build-all:
 	env GOOS=darwin GOARCH=amd64 go build -o build/darwin64/${EXECUTABLE} -v ${PACKAGE}/${EXECUTABLE}
 
 	mkdir -p build/windows32
-	env GOOS=windows GOARCH=386 go build -o build/windows32/${EXECUTABLE} -v ${PACKAGE}/${EXECUTABLE}
+	env GOOS=windows GOARCH=386 go build -o build/windows32/${EXECUTABLE}.exe -v ${PACKAGE}/${EXECUTABLE}
 
 	mkdir -p build/windows64
-	env GOOS=windows GOARCH=amd64 go build -o build/windows64/${EXECUTABLE} -v ${PACKAGE}/${EXECUTABLE}
+	env GOOS=windows GOARCH=amd64 go build -o build/windows64/${EXECUTABLE}.exe -v ${PACKAGE}/${EXECUTABLE}
