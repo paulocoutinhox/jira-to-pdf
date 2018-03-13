@@ -4,6 +4,23 @@ LOG_FILE=/var/log/${EXECUTABLE}.log
 GOFMT=gofmt -w
 GODEPS=go get -u
 
+.DEFAULT_GOAL := help
+
+# general
+help:
+	@echo "Type: make [rule]. Available options are:"
+	@echo ""
+	@echo "- help"
+	@echo "- build"
+	@echo "- install"
+	@echo "- format"
+	@echo "- deps"
+	@echo "- start"
+	@echo "- stop"
+	@echo "- update"
+	@echo "- build-all"
+	@echo ""
+
 build:
 	go build -o ${EXECUTABLE}
 
@@ -12,8 +29,6 @@ install:
 
 format:
 	${GOFMT} main.go
-
-test:
 
 deps:
 	${GODEPS} github.com/andygrunwald/go-jira

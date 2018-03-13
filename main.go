@@ -170,13 +170,14 @@ func parseIssueTemplate(index int, issue jira.Issue) string {
 	issueText = strings.Replace(issueText, "[issue.key]", issue.Key, -1)
 	issueText = strings.Replace(issueText, "[issue.id]", issue.ID, -1)
 	issueText = strings.Replace(issueText, "[issue.fields.description]", issue.Fields.Description, -1)
-	issueText = strings.Replace(issueText, "[issue.fields.duedate]", issue.Fields.Duedate, -1)
+	issueText = strings.Replace(issueText, "[issue.fields.duedate]", time.Time(issue.Fields.Duedate).Format("2006-01-02 15:04:05"), -1)
 	issueText = strings.Replace(issueText, "[issue.fields.expand]", issue.Fields.Expand, -1)
-	issueText = strings.Replace(issueText, "[issue.fields.resolutiondate]", issue.Fields.Resolutiondate, -1)
+	issueText = strings.Replace(issueText, "[issue.fields.resolutiondate]", time.Time(issue.Fields.Resolutiondate).Format("2006-01-02 15:04:05"), -1)
 	issueText = strings.Replace(issueText, "[issue.fields.summary]", issue.Fields.Summary, -1)
 	issueText = strings.Replace(issueText, "[issue.fields.timeestimate]", strconv.Itoa(issue.Fields.TimeEstimate), -1)
 	issueText = strings.Replace(issueText, "[issue.fields.timeoriginalestimate]", strconv.Itoa(issue.Fields.TimeOriginalEstimate), -1)
 	issueText = strings.Replace(issueText, "[issue.fields.timespent]", strconv.Itoa(issue.Fields.TimeSpent), -1)
+	issueText = strings.Replace(issueText, "[issue.fields.created]", time.Time(issue.Fields.Created).Format(paramDateTimeFormat), -1)
 
 	issueText = strings.Replace(issueText, "[issue.fields.project.name]", issue.Fields.Project.Name, -1)
 	issueText = strings.Replace(issueText, "[issue.fields.project.description]", issue.Fields.Project.Description, -1)
@@ -255,20 +256,6 @@ func parseIssueTemplate(index int, issue jira.Issue) string {
 		issueText = strings.Replace(issueText, "[issue.fields.status.name]", "", -1)
 		issueText = strings.Replace(issueText, "[issue.fields.status.description]", "", -1)
 		issueText = strings.Replace(issueText, "[issue.fields.status.id]", "", -1)
-	}
-
-	if len(issue.Fields.Created) > 0 {
-		dateTime, err := time.Parse(apiDateTimeFormat, issue.Fields.Created)
-
-		if err == nil {
-			issueText = strings.Replace(issueText, "[issue.fields.created]", dateTime.Format(paramDateTimeFormat), -1)
-		} else {
-			if paramVerbose {
-				log.Printf("Error on parse field \"created\"! %v\n", err)
-			}
-
-			issueText = strings.Replace(issueText, "[issue.fields.created]", "", -1)
-		}
 	}
 
 	return issueText
